@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fbfaf8;
+  --surface: #ffffff;
+  --ink: #282624;
+  --muted: #706b66;
+  --border: #e8e2dc;
+  --brand: #286f66;
+  --brand-soft: #e6f2ef;
+  --menstrual: #d95978;
+  --menstrual-soft: #fbe8ed;
+  --follicular: #259b88;
+  --follicular-soft: #e1f4ef;
+  --ovulation: #c58b20;
+  --ovulation-soft: #f9efd8;
+  --luteal: #8465ad;
+  --luteal-soft: #eee8f6;
+  --devi-d: #d24e62;
+  --devi-e: #dc8d22;
+  --devi-v: #238d7a;
+  --devi-i: #7d5ca7;
+  --radius: 1.25rem;
+}
+
+* { box-sizing: border-box; }
+html { color-scheme: light; }
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--ink);
+  font-family: Arial, "Noto Sans Arabic", sans-serif;
+}
+a { color: inherit; text-decoration: none; }
+button, input, select, textarea { font: inherit; }
+button, a, input, select, textarea { outline-offset: 3px; }
+:focus-visible { outline: 3px solid color-mix(in srgb, var(--brand) 60%, white); }
+.shell { width: min(1120px, calc(100% - 2rem)); margin-inline: auto; }
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 12px 35px rgb(62 48 38 / 7%);
+}
+.button {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  min-height: 44px; border-radius: 999px; padding: .7rem 1rem; border: 1px solid transparent;
+  background: var(--brand); color: white; cursor: pointer; font-weight: 700;
+}
+.button.secondary { color: var(--brand); background: white; border-color: var(--brand); }
+.button.ghost { color: var(--ink); background: transparent; border-color: var(--border); }
+.field { display: grid; gap: .4rem; }
+.field input, .field select, .field textarea {
+  width: 100%; border: 1px solid var(--border); border-radius: .9rem; padding: .75rem;
+  background: white; color: var(--ink);
+}
+.muted { color: var(--muted); }
+.pill { display: inline-flex; border-radius: 999px; padding: .35rem .7rem; font-size: .85rem; font-weight: 700; }
+.grid { display: grid; gap: 1rem; }
+@media (min-width: 760px) { .grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; } }

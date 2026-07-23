@@ -1,0 +1,9 @@
+import Link from "next/link";
+import { format } from "date-fns";
+import { ar } from "date-fns/locale";
+import { estimateCycle, PHASE_CONFIG, type CycleRecord } from "@/domain/cycle";
+import { PhaseBadge } from "@/components/phase-badge";
+export function ProfileCard({profile,records,privateMode=false}:{profile:{id:string;display_name:string;theme_color:string;expected_cycle_length:number;expected_period_length:number;expected_luteal_length:number};records:CycleRecord[];privateMode?:boolean}) {
+ const e=estimateCycle(records,{expectedCycleLength:profile.expected_cycle_length,expectedPeriodLength:profile.expected_period_length,expectedLutealLength:profile.expected_luteal_length}); if(privateMode)return <article className="card" style={{padding:"1.25rem"}}><h2>{profile.display_name}</h2><p className="muted">التفاصيل مخفية حفاظاً على الخصوصية.</p><Link className="button secondary" href={`/app/profiles/${profile.id}`}>إظهار التفاصيل</Link></article>;
+ return <article className="card grid" style={{padding:"1.25rem",borderTop:`5px solid ${profile.theme_color}`}}><div style={{display:"flex",justifyContent:"space-between"}}><h2 style={{margin:0}}>{profile.display_name}</h2>{e&&<PhaseBadge phase={e.phase}/>}</div>{e?<><p>اليوم <strong>{e.cycleDay}</strong> من الدورة · الثقة: {e.confidence==="low"?"منخفض":e.confidence==="medium"?"متوسط":"مرتفع"}</p><p className="muted">الدورة القادمة المتوقعة: {format(e.nextPeriod.start,"d MMM",{locale:ar})} – {format(e.nextPeriod.end,"d MMM",{locale:ar})}</p><p><strong>قد يناسبها اليوم:</strong> {PHASE_CONFIG[e.phase].guidance.slice(0,2).join(" و")}</p></>:<p className="muted">لم تُسجّل دورة بعد. أضف تاريخ البداية للحصول على تقدير.</p>}<div style={{display:"flex",gap:".5rem",flexWrap:"wrap"}}><Link className="button" href={`/app/profiles/${profile.id}/check-in`}>تسجيل الحالة</Link><Link className="button secondary" href={`/app/profiles/${profile.id}`}>عرض التفاصيل</Link></div></article>;
+}

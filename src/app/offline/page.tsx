@@ -1,0 +1,1 @@
+export default function Page(){return <main className="shell" style={{paddingBlock:"5rem"}}><h1>أنت غير متصل</h1><p className="muted">يمكنك العودة إلى الصفحات الخاصة بعد استعادة الاتصال. لا نخزّن بياناتك الحساسة للاستخدام دون اتصال.</p></main>}
