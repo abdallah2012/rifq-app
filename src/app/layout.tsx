@@ -12,9 +12,9 @@ export const metadata: Metadata = {
   openGraph: {
     title: "رِفق",
     description: "اهتمام أنسب، في الوقت الأنسب",
-    images: [{ url: "/og.png", width: 1536, height: 1024, alt: "رِفق — اهتمام أنسب، في الوقت الأنسب" }],
+    images: [{ url: "/og.jpg", width: 600, height: 400, alt: "رِفق — اهتمام أنسب، في الوقت الأنسب" }],
   },
-  twitter: { card: "summary_large_image", images: ["/og.png"] },
+  twitter: { card: "summary_large_image", images: ["/og.jpg"] },
 };
 
 export const viewport: Viewport = { themeColor: "#286f66", colorScheme: "light" };
