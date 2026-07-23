@@ -4,6 +4,11 @@ import path from "node:path";
 
 export default defineConfig({
   plugins: [react()],
-  test: { environment: "jsdom", setupFiles: ["./tests/setup.ts"], coverage: { reporter: ["text", "html"] } },
-  resolve: { alias: { "@": path.resolve(__dirname, "src") } }
+  test: {
+    environment: "jsdom",
+    setupFiles: ["./tests/setup.ts"],
+    include: ["tests/unit/**/*.test.ts", "tests/components/**/*.test.tsx"],
+    coverage: { reporter: ["text", "html"] },
+  },
+  resolve: { alias: { "@": path.resolve(__dirname, "src") } },
 });
