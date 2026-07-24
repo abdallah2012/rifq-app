@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { expect, it } from "vitest";
 import { rankRecommendations } from "@/domain/recommendations";
 it("penalizes rejected activities deterministically", () => {
   const a = {
