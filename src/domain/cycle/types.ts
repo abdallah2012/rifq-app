@@ -12,7 +12,10 @@ export interface CycleSettings {
   expectedLutealLength?: number;
 }
 
-export interface DateRange { start: Date; end: Date; }
+export interface DateRange {
+  start: Date;
+  end: Date;
+}
 
 export interface CycleEstimate {
   cycleDay: number;

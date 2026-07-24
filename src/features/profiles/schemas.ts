@@ -8,10 +8,17 @@ export const profileSchema = z.object({
   expectedPeriodLength: z.coerce.number().int().min(1).max(12),
   expectedLutealLength: z.coerce.number().int().min(9).max(18),
   cycleRegularity: z.enum(["regular", "variable", "unknown"]),
-  latestPeriodStart: z.string().date().optional().or(z.literal(""))
+  latestPeriodStart: z.string().date().optional().or(z.literal("")),
 });
 
-export const cycleRecordSchema = z.object({
-  profileId: z.string().uuid(), periodStartDate: z.string().date(),
-  periodEndDate: z.string().date().optional().or(z.literal("")), notes: z.string().max(2000).optional()
-}).refine(v => !v.periodEndDate || v.periodEndDate >= v.periodStartDate, { message: "تاريخ النهاية يجب أن يلي البداية.", path: ["periodEndDate"] });
+export const cycleRecordSchema = z
+  .object({
+    profileId: z.string().uuid(),
+    periodStartDate: z.string().date(),
+    periodEndDate: z.string().date().optional().or(z.literal("")),
+    notes: z.string().max(2000).optional(),
+  })
+  .refine((v) => !v.periodEndDate || v.periodEndDate >= v.periodStartDate, {
+    message: "تاريخ النهاية يجب أن يلي البداية.",
+    path: ["periodEndDate"],
+  });

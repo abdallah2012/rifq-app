@@ -1,1 +1,33 @@
-const CACHE="rifq-static-v1";const SAFE=["/","/offline"];self.addEventListener("install",e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SAFE))));self.addEventListener("fetch",e=>{const u=new URL(e.request.url);if(e.request.method!=="GET"||u.pathname.startsWith("/app")||u.pathname.startsWith("/api")||u.pathname.startsWith("/auth"))return;e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(x=>{if(x.ok&&["style","script","image","font"].includes(e.request.destination))caches.open(CACHE).then(c=>c.put(e.request,x.clone()));return x;}).catch(()=>caches.match("/offline"))));});
+const CACHE = "rifq-static-v1";
+const SAFE = ["/", "/offline"];
+self.addEventListener("install", (e) =>
+  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SAFE))),
+);
+self.addEventListener("fetch", (e) => {
+  const u = new URL(e.request.url);
+  if (
+    e.request.method !== "GET" ||
+    u.pathname.startsWith("/app") ||
+    u.pathname.startsWith("/api") ||
+    u.pathname.startsWith("/auth")
+  )
+    return;
+  e.respondWith(
+    caches.match(e.request).then(
+      (r) =>
+        r ||
+        fetch(e.request)
+          .then((x) => {
+            if (
+              x.ok &&
+              ["style", "script", "image", "font"].includes(
+                e.request.destination,
+              )
+            )
+              caches.open(CACHE).then((c) => c.put(e.request, x.clone()));
+            return x;
+          })
+          .catch(() => caches.match("/offline")),
+    ),
+  );
+});

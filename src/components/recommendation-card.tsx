@@ -20,12 +20,25 @@ export function RecommendationCard({
   const ui = PHASE_UI[phase];
   return (
     <article className={`recommendation-card ${ui.className}`}>
-      <div className="recommendation-card__top"><span className="chip">{category}</span><Heart size={19} aria-hidden="true" /></div>
+      <div className="recommendation-card__top">
+        <span className="chip">{category}</span>
+        <Heart size={19} aria-hidden="true" />
+      </div>
       <h2>{title}</h2>
       <p>{description}</p>
       <div className="recommendation-meta">
-        <span><Clock3 size={16} aria-hidden="true" />{minutes} دقيقة</span>
-        <span><Coins size={16} aria-hidden="true" />{budget === "free" ? "بدون تكلفة" : budget === "low" ? "تكلفة منخفضة" : "تكلفة متوسطة"}</span>
+        <span>
+          <Clock3 size={16} aria-hidden="true" />
+          {minutes} دقيقة
+        </span>
+        <span>
+          <Coins size={16} aria-hidden="true" />
+          {budget === "free"
+            ? "بدون تكلفة"
+            : budget === "low"
+              ? "تكلفة منخفضة"
+              : "تكلفة متوسطة"}
+        </span>
       </div>
       <button className="button secondary">حفظ الاقتراح</button>
     </article>
