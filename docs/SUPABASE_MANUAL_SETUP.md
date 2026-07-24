@@ -64,7 +64,7 @@ Expected: `activity_count = 40` and `distinct_activity_titles = 40` on a fresh s
 
 ### Error before migration commit
 
-The transaction should roll back automatically. Read the first SQL error, correct the underlying environment/problem, confirm no transaction remains open, and rerun the complete migration. If the editor session says the transaction is aborted, run `rollback;` in that same tab before retrying. Do not run fragments.
+The transaction should roll back all migration-created objects because PostgreSQL DDL and the dynamic policy statements are inside the file's explicit `begin;`/`commit;`. If SQL Editor stopped on the error, the tab may retain an aborted transaction: run `rollback;` in that tab. Then run the read-only `supabase/tests/verify_clean_state.sql`; expect **zero rows**. A returned row means a named RIFQ object exists (including one that predated the failed run), so investigate it rather than rerunning blindly. After an empty result, correct the underlying problem and rerun the complete migration from its first `begin;`. Do not run fragments.
 
 ### Migration succeeded but seed failed
 
