@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PhaseOverview } from "@/components/phase-overview";
 
 const steps = [
   ["1", "خصوصيتك أولاً", "كل ملف مستقل، ويمكنك تصدير بياناتك أو حذفها متى شئت."],
@@ -23,6 +24,12 @@ export default function Page() {
             <div><h2 style={{ marginTop: 0 }}>{title}</h2><p className="muted">{description}</p></div>
           </article>
         ))}
+      </div>
+      <div>
+        <p className="eyebrow">كيف يقرأ رِفق الدورة؟</p>
+        <h2>أربع مراحل، وإشارات مختلفة</h2>
+        <p className="muted">يعرض رِفق الاحتياجات المحتملة بلغة تقديرية، مع لون ورقم واسم لكل مرحلة.</p>
+        <PhaseOverview />
       </div>
       <div style={{ display: "flex", gap: ".6rem", flexWrap: "wrap" }}>
         <Link className="button" href="/app/profiles/new">إنشاء الملف الأول</Link>
