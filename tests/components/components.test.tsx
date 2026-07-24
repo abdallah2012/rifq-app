@@ -10,7 +10,9 @@ import { ProfileCard } from "@/features/profiles/profile-card";
 describe("infographic-inspired phase components", () => {
   it("shows phase number, icon label, and Arabic name", () => {
     render(<PhaseBadge phase="luteal" />);
-    expect(screen.getByLabelText("المرحلة 4: الطور الأصفري")).toBeInTheDocument();
+    expect(
+      screen.getByLabelText("المرحلة 4: الطور الأصفري"),
+    ).toBeInTheDocument();
     expect(screen.getByText("الطور الأصفري")).toBeInTheDocument();
   });
 
@@ -23,7 +25,9 @@ describe("infographic-inspired phase components", () => {
 
   it("marks the current timeline step semantically", () => {
     render(<CycleTimeline currentPhase="ovulation" cycleDay={14} />);
-    expect(screen.getByText("الإباضة").closest("[aria-current='step']")).toBeInTheDocument();
+    expect(
+      screen.getByText("الإباضة").closest("[aria-current='step']"),
+    ).toBeInTheDocument();
     expect(screen.getByLabelText("مسار الدورة؛ اليوم 14")).toBeInTheDocument();
   });
 
@@ -45,14 +49,38 @@ describe("infographic-inspired phase components", () => {
 
 describe("refined dashboard cards", () => {
   it("keeps profile cycle information together", () => {
-    render(<ProfileCard profile={{ id: "p1", display_name: "سارة", theme_color: "#286f66", expected_cycle_length: 28, expected_period_length: 5, expected_luteal_length: 14 }} records={[{ periodStartDate: "2026-07-01" }]} />);
+    render(
+      <ProfileCard
+        profile={{
+          id: "p1",
+          display_name: "سارة",
+          theme_color: "#286f66",
+          expected_cycle_length: 28,
+          expected_period_length: 5,
+          expected_luteal_length: 14,
+        }}
+        records={[{ periodStartDate: "2026-07-01" }]}
+      />,
+    );
     expect(screen.getByRole("heading", { name: "سارة" })).toBeInTheDocument();
     expect(screen.getByText("قد يناسبها اليوم")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "عرض التفاصيل" })).toHaveAttribute("href", "/app/profiles/p1");
+    expect(screen.getByRole("link", { name: "عرض التفاصيل" })).toHaveAttribute(
+      "href",
+      "/app/profiles/p1",
+    );
   });
 
   it("renders recommendation metadata", () => {
-    render(<RecommendationCard title="نزهة قصيرة" description="مشي هادئ" category="الخروج" minutes={30} budget="free" phase="follicular" />);
+    render(
+      <RecommendationCard
+        title="نزهة قصيرة"
+        description="مشي هادئ"
+        category="الخروج"
+        minutes={30}
+        budget="free"
+        phase="follicular"
+      />,
+    );
     expect(screen.getByText("30 دقيقة")).toBeInTheDocument();
     expect(screen.getByText("بدون تكلفة")).toBeInTheDocument();
   });

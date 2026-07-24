@@ -3,7 +3,9 @@ import { test, expect } from "@playwright/test";
 test("Arabic welcome and protected route", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
-  await expect(page.getByRole("heading", { name: /اهتمام أنسب/ })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: /اهتمام أنسب/ }),
+  ).toBeVisible();
   await page.goto("/app");
   await expect(page).toHaveURL(/login/);
 });

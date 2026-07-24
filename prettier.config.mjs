@@ -1,1 +1,6 @@
-export default { plugins: [], semi: true, singleQuote: false, trailingComma: "all" };
+export default {
+  plugins: [],
+  semi: true,
+  singleQuote: false,
+  trailingComma: "all",
+};

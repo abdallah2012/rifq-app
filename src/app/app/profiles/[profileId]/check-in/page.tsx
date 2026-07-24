@@ -1,1 +1,13 @@
-import{CheckinForm}from"@/features/checkins/checkin-form";export default async function Page({params}:{params:Promise<{profileId:string}>}){return <section style={{maxWidth:640,marginInline:"auto"}}><h1>تسجيل الحالة</h1><CheckinForm profileId={(await params).profileId}/></section>}
+import { CheckinForm } from "@/features/checkins/checkin-form";
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ profileId: string }>;
+}) {
+  return (
+    <section style={{ maxWidth: 640, marginInline: "auto" }}>
+      <h1>تسجيل الحالة</h1>
+      <CheckinForm profileId={(await params).profileId} />
+    </section>
+  );
+}

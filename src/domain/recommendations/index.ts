@@ -1,5 +1,69 @@
 import type { CyclePhase } from "@/domain/cycle";
-export interface Activity { id:string; phase:CyclePhase[]; energy:"low"|"medium"|"high"; minutes:number; budget:"free"|"low"|"medium"; indoorOutdoor:"indoor"|"outdoor"|"either"; }
-export interface RecommendationContext { phase:CyclePhase; energy?:Activity["energy"]; minutes?:number; budget?:Activity["budget"]; indoorOutdoor?:Activity["indoorOutdoor"]; likedIds?:string[]; rejectedIds?:string[]; recentIds?:string[]; ratings?:Record<string,number>; }
-export const WEIGHTS={phase:30,energy:12,time:8,budget:8,place:6,liked:12,highRating:10,novelty:4,rejected:-40,repeated:-10,energyMismatch:-15} as const;
-export function rankRecommendations(activities:Activity[],c:RecommendationContext){return activities.map(activity=>{let score=0;const reasons:string[]=[];if(activity.phase.includes(c.phase)){score+=WEIGHTS.phase;reasons.push("مناسب للمرحلة المقدرة");}if(!c.energy||activity.energy===c.energy){score+=WEIGHTS.energy;reasons.push("ملائم للطاقة");}else if(c.energy==="low"&&activity.energy==="high")score+=WEIGHTS.energyMismatch;if(!c.minutes||activity.minutes<=c.minutes)score+=WEIGHTS.time;if(!c.budget||activity.budget===c.budget)score+=WEIGHTS.budget;if(!c.indoorOutdoor||activity.indoorOutdoor==="either"||activity.indoorOutdoor===c.indoorOutdoor)score+=WEIGHTS.place;if(c.likedIds?.includes(activity.id))score+=WEIGHTS.liked;if((c.ratings?.[activity.id]??0)>=4)score+=WEIGHTS.highRating;if(c.rejectedIds?.includes(activity.id))score+=WEIGHTS.rejected;if(c.recentIds?.includes(activity.id))score+=WEIGHTS.repeated;else score+=WEIGHTS.novelty;return{activity,score,reasons};}).sort((a,b)=>b.score-a.score||a.activity.id.localeCompare(b.activity.id));}
+export interface Activity {
+  id: string;
+  phase: CyclePhase[];
+  energy: "low" | "medium" | "high";
+  minutes: number;
+  budget: "free" | "low" | "medium";
+  indoorOutdoor: "indoor" | "outdoor" | "either";
+}
+export interface RecommendationContext {
+  phase: CyclePhase;
+  energy?: Activity["energy"];
+  minutes?: number;
+  budget?: Activity["budget"];
+  indoorOutdoor?: Activity["indoorOutdoor"];
+  likedIds?: string[];
+  rejectedIds?: string[];
+  recentIds?: string[];
+  ratings?: Record<string, number>;
+}
+export const WEIGHTS = {
+  phase: 30,
+  energy: 12,
+  time: 8,
+  budget: 8,
+  place: 6,
+  liked: 12,
+  highRating: 10,
+  novelty: 4,
+  rejected: -40,
+  repeated: -10,
+  energyMismatch: -15,
+} as const;
+export function rankRecommendations(
+  activities: Activity[],
+  c: RecommendationContext,
+) {
+  return activities
+    .map((activity) => {
+      let score = 0;
+      const reasons: string[] = [];
+      if (activity.phase.includes(c.phase)) {
+        score += WEIGHTS.phase;
+        reasons.push("مناسب للمرحلة المقدرة");
+      }
+      if (!c.energy || activity.energy === c.energy) {
+        score += WEIGHTS.energy;
+        reasons.push("ملائم للطاقة");
+      } else if (c.energy === "low" && activity.energy === "high")
+        score += WEIGHTS.energyMismatch;
+      if (!c.minutes || activity.minutes <= c.minutes) score += WEIGHTS.time;
+      if (!c.budget || activity.budget === c.budget) score += WEIGHTS.budget;
+      if (
+        !c.indoorOutdoor ||
+        activity.indoorOutdoor === "either" ||
+        activity.indoorOutdoor === c.indoorOutdoor
+      )
+        score += WEIGHTS.place;
+      if (c.likedIds?.includes(activity.id)) score += WEIGHTS.liked;
+      if ((c.ratings?.[activity.id] ?? 0) >= 4) score += WEIGHTS.highRating;
+      if (c.rejectedIds?.includes(activity.id)) score += WEIGHTS.rejected;
+      if (c.recentIds?.includes(activity.id)) score += WEIGHTS.repeated;
+      else score += WEIGHTS.novelty;
+      return { activity, score, reasons };
+    })
+    .sort(
+      (a, b) => b.score - a.score || a.activity.id.localeCompare(b.activity.id),
+    );
+}

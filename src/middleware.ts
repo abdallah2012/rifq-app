@@ -12,13 +12,19 @@ export async function middleware(request: NextRequest) {
       setAll(values) {
         values.forEach(({ name, value }) => request.cookies.set(name, value));
         response = NextResponse.next({ request });
-        values.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
-      }
-    }
+        values.forEach(({ name, value, options }) =>
+          response.cookies.set(name, value, options),
+        );
+      },
+    },
   });
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (request.nextUrl.pathname.startsWith("/app") && !user) {
-    const next = request.nextUrl.clone(); next.pathname = "/login"; return NextResponse.redirect(next);
+    const next = request.nextUrl.clone();
+    next.pathname = "/login";
+    return NextResponse.redirect(next);
   }
   return response;
 }
