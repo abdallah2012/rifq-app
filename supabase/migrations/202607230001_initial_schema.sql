@@ -1,3 +1,5 @@
+begin;
+
 create extension if not exists pgcrypto;
 
 create type public.cycle_phase as enum ('menstrual','follicular','ovulation','luteal');
@@ -110,6 +112,17 @@ create index profiles_user_idx on public.profiles(user_id);
 create index cycles_profile_date_idx on public.cycle_records(profile_id, period_start_date desc);
 create index checkins_profile_date_idx on public.daily_checkins(profile_id, checkin_date desc);
 create index feedback_profile_date_idx on public.activity_feedback(profile_id, feedback_date desc);
+create index cycles_user_idx on public.cycle_records(user_id);
+create index checkins_user_idx on public.daily_checkins(user_id);
+create unique index activities_title_ar_idx on public.activities(title_ar);
+create index profile_activity_preferences_user_idx on public.profile_activity_preferences(user_id);
+create index profile_activity_preferences_activity_idx on public.profile_activity_preferences(activity_id);
+create index activity_feedback_user_idx on public.activity_feedback(user_id);
+create index activity_feedback_activity_idx on public.activity_feedback(activity_id);
+create index profile_phase_preferences_user_idx on public.profile_phase_preferences(user_id);
+create index notification_preferences_user_idx on public.notification_preferences(user_id);
+create index notification_preferences_profile_idx on public.notification_preferences(profile_id) where profile_id is not null;
+create index audit_events_user_created_idx on public.audit_events(user_id, created_at desc);
 create unique index notification_user_default_idx on public.notification_preferences(user_id) where profile_id is null;
 create unique index notification_user_profile_idx on public.notification_preferences(user_id, profile_id) where profile_id is not null;
 
@@ -118,7 +131,7 @@ begin new.updated_at = now(); return new; end $$;
 
 do $$ declare t text; begin
   foreach t in array array['profiles','cycle_records','daily_checkins','activities','profile_activity_preferences','activity_feedback','profile_phase_preferences','notification_preferences','user_settings']
-  loop execute format('create trigger set_updated_at before update on public.%I for each row execute function public.set_updated_at()', t); end loop;
+  loop execute format('create trigger %I before update on public.%I for each row execute function public.set_updated_at()', 'set_updated_at', t); end loop;
 end $$;
 
 alter table public.profiles enable row level security;
@@ -137,10 +150,10 @@ create policy "activities readable" on public.activities for select to authentic
 do $$ declare t text; begin
   foreach t in array array['profiles','cycle_records','daily_checkins','profile_activity_preferences','activity_feedback','profile_phase_preferences','notification_preferences','user_settings','audit_events']
   loop
-    execute format('create policy %L on public.%I for select to authenticated using ((select auth.uid()) = user_id)', t || ' select own', t);
-    execute format('create policy %L on public.%I for insert to authenticated with check ((select auth.uid()) = user_id)', t || ' insert own', t);
-    execute format('create policy %L on public.%I for update to authenticated using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id)', t || ' update own', t);
-    execute format('create policy %L on public.%I for delete to authenticated using ((select auth.uid()) = user_id)', t || ' delete own', t);
+    execute format('create policy %I on public.%I for select to authenticated using ((select auth.uid()) = user_id)', t || ' select own', t);
+    execute format('create policy %I on public.%I for insert to authenticated with check ((select auth.uid()) = user_id)', t || ' insert own', t);
+    execute format('create policy %I on public.%I for update to authenticated using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id)', t || ' update own', t);
+    execute format('create policy %I on public.%I for delete to authenticated using ((select auth.uid()) = user_id)', t || ' delete own', t);
   end loop;
 end $$;
 
@@ -151,11 +164,14 @@ $$ select exists(select 1 from public.profiles where id = target_profile and use
 create or replace function public.enforce_profile_ownership() returns trigger
 language plpgsql security invoker set search_path = '' as $$
 begin
+  if new.profile_id is null then return new; end if;
   if not public.owns_profile(new.profile_id) then raise exception 'not authorized'; end if;
   return new;
 end $$;
 
 do $$ declare t text; begin
-  foreach t in array array['cycle_records','daily_checkins','profile_activity_preferences','activity_feedback','profile_phase_preferences']
-  loop execute format('create trigger enforce_profile_ownership before insert or update on public.%I for each row execute function public.enforce_profile_ownership()', t); end loop;
+  foreach t in array array['cycle_records','daily_checkins','profile_activity_preferences','activity_feedback','profile_phase_preferences','notification_preferences']
+  loop execute format('create trigger %I before insert or update on public.%I for each row execute function public.enforce_profile_ownership()', 'enforce_profile_ownership', t); end loop;
 end $$;
+
+commit;
