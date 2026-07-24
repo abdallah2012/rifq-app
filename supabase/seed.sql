@@ -42,4 +42,16 @@ with seed(title, description, category, phases, devi, frame, energy, minutes, bu
 ('مراجعة خطة مشتركة','تأكدا أن الخطة ما زالت مناسبة لكليكما.','التخطيط المشترك','{luteal,follicular}','{D,I}','Comfort Frame','low',30,'free','indoor')
 )
 insert into public.activities(title_ar,description_ar,category,phase,devi_elements,frame_name,energy_requirement,communication_requirement,approximate_minutes,budget_level,indoor_outdoor)
-select title,description,category,phases::cycle_phase[],devi,frame,energy::energy_level,'medium'::energy_level,minutes,budget::budget_level,place from seed;
+select title,description,category,phases::cycle_phase[],devi,frame,energy::energy_level,'medium'::energy_level,minutes,budget::budget_level,place from seed
+on conflict (title_ar) do update set
+  description_ar = excluded.description_ar,
+  category = excluded.category,
+  phase = excluded.phase,
+  devi_elements = excluded.devi_elements,
+  frame_name = excluded.frame_name,
+  energy_requirement = excluded.energy_requirement,
+  communication_requirement = excluded.communication_requirement,
+  approximate_minutes = excluded.approximate_minutes,
+  budget_level = excluded.budget_level,
+  indoor_outdoor = excluded.indoor_outdoor,
+  is_active = true;
