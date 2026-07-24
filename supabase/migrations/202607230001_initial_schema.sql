@@ -131,7 +131,7 @@ begin new.updated_at = now(); return new; end $$;
 
 do $$ declare t text; begin
   foreach t in array array['profiles','cycle_records','daily_checkins','activities','profile_activity_preferences','activity_feedback','profile_phase_preferences','notification_preferences','user_settings']
-  loop execute format('create trigger set_updated_at before update on public.%I for each row execute function public.set_updated_at()', t); end loop;
+  loop execute format('create trigger %I before update on public.%I for each row execute function public.set_updated_at()', 'set_updated_at', t); end loop;
 end $$;
 
 alter table public.profiles enable row level security;
@@ -150,10 +150,10 @@ create policy "activities readable" on public.activities for select to authentic
 do $$ declare t text; begin
   foreach t in array array['profiles','cycle_records','daily_checkins','profile_activity_preferences','activity_feedback','profile_phase_preferences','notification_preferences','user_settings','audit_events']
   loop
-    execute format('create policy %L on public.%I for select to authenticated using ((select auth.uid()) = user_id)', t || ' select own', t);
-    execute format('create policy %L on public.%I for insert to authenticated with check ((select auth.uid()) = user_id)', t || ' insert own', t);
-    execute format('create policy %L on public.%I for update to authenticated using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id)', t || ' update own', t);
-    execute format('create policy %L on public.%I for delete to authenticated using ((select auth.uid()) = user_id)', t || ' delete own', t);
+    execute format('create policy %I on public.%I for select to authenticated using ((select auth.uid()) = user_id)', t || ' select own', t);
+    execute format('create policy %I on public.%I for insert to authenticated with check ((select auth.uid()) = user_id)', t || ' insert own', t);
+    execute format('create policy %I on public.%I for update to authenticated using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id)', t || ' update own', t);
+    execute format('create policy %I on public.%I for delete to authenticated using ((select auth.uid()) = user_id)', t || ' delete own', t);
   end loop;
 end $$;
 
@@ -171,7 +171,7 @@ end $$;
 
 do $$ declare t text; begin
   foreach t in array array['cycle_records','daily_checkins','profile_activity_preferences','activity_feedback','profile_phase_preferences','notification_preferences']
-  loop execute format('create trigger enforce_profile_ownership before insert or update on public.%I for each row execute function public.enforce_profile_ownership()', t); end loop;
+  loop execute format('create trigger %I before insert or update on public.%I for each row execute function public.enforce_profile_ownership()', 'enforce_profile_ownership', t); end loop;
 end $$;
 
 commit;
